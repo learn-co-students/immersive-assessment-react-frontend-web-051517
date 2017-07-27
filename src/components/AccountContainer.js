@@ -29,10 +29,12 @@ class AccountContainer extends Component {
   }
 
   render() {
+    const {transactions, searchTerm} = this.state
+
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search searchTerm={searchTerm} handleChange={this.handleChange} />
+        <TransactionsList transactions={transactions} searchTerm={searchTerm} />
       </div>
     )
   }
