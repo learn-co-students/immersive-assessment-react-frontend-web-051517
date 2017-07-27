@@ -46,19 +46,35 @@ class AccountContainer extends Component {
     }
   }
 
-  handleChange(event) {
+  handleChange = (event) => {
     // your code here
+    event.preventDefault()
+    this.setState({
+      searchTerm: event.target.value
+    })
+  }
+
+  componentWillMount = () => {
+    fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+      .then(res=>res.json())
+      .then(transactions=>this.setState({transactions}))
+  }
+
+  searchTransaction = () => {
+    return this.state.transactions.filter(x=>x.description.toLowerCase().includes(this.state.searchTerm.toLowerCase()) || x.category.toLowerCase().includes(this.state.searchTerm.toLowerCase())
+    )
   }
 
   render() {
-
+    // debugger
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange} />
+        <TransactionsList transactions={this.searchTransaction()} searchTerm={this.state.searchTerm} />
       </div>
     )
   }
+
 }
 
 export default AccountContainer
