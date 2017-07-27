@@ -47,15 +47,34 @@ class AccountContainer extends Component {
   }
 
   handleChange(event) {
-    // your code here
+
+    if(event.target.value ===''){
+      fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+      .then(res=>res.json())
+      .then(transactions => this.setState({transactions}))
+    }
+    this.setState({searchTerm:event.target.value})
+
+    const trans = this.state.transactions.filter((trans)=>{
+      if(trans.category.toLowerCase().includes(this.state.searchTerm.toLowerCase())||trans.description.toLowerCase().includes(this.state.searchTerm.toLowerCase())){
+        return trans
+      }
+    })
+    this.setState({transactions:trans})
   }
 
+
+  componentDidMount(){
+    fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+    .then(res=>res.json())
+    .then(transactions => this.setState({transactions}))
+  }
   render() {
 
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange.bind(this)} />
+        <TransactionsList transactions={this.state.transactions}/>
       </div>
     )
   }
