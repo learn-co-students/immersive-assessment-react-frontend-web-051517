@@ -1,8 +1,7 @@
 import React from 'react'
 
-const Transaction = (props) => {
-  return (
-    <table className="ui celled striped padded table">
+const TransactionHeader = (props) => {
+  return(
     <theader>
       <tr>
         <th>
@@ -27,19 +26,7 @@ const Transaction = (props) => {
         </th>
       </tr>
     </theader>
-    <tbody>
-      {props.transactions.map((transaction) => (
-        <row>
-          <td>{transaction.posted_at}</td>
-          <td>{transaction.description}</td>
-          <td>{transaction.category}</td>
-          <td>{transaction.amount}</td>
-        </row>
-      ))}
-    </tbody>
-  </table>
-
   )
 }
 
-export default Transaction
+export default TransactionHeader

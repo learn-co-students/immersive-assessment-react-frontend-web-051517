@@ -7,55 +7,54 @@ class AccountContainer extends Component {
   constructor() {
     super()
 
-    // we have provided this default state for you,
-    // use this to get the functionality working
-    // and then replace the default transactions with a call to the API
-
     this.state = {
       searchTerm: '',
       transactions: [
-        {
-          id: 1,
-          posted_at: "2017-02-28 11:00:00",
-          description: "Leather Pants, Gap co.",
-          category: "Fashion",
-          amount: -20000
-        },
-        {
-          id: 2,
-          posted_at: "2017-02-29 10:30:00",
-          description: "Paycheck from Bob's Burgers",
-          category: "Income",
-          amount: 100000
-        },
-        {
-          id: 3,
-          posted_at: "2017-05-24 10:53:00",
-          description: "'Pair Programming Illuminated' by Laurie Williams and Robert Kessler",
-          category: "Book",
-          amount: 1498
-        },
-        {
-          id: 4,
-          posted_at: "2017-05-24 08:52:00",
-          description: "Medium Iced Cold Brew, Gregory's Coffee",
-          category: "Coffee",
-          amount: 365
-        }
       ]
     }
   }
 
-  handleChange(event) {
-    // your code here
+  seeTransactionDescriptions(){
+    this.state.transactions.map((transaction) =>
+    console.log(transaction.description))
   }
+
+
+  handleChange = (event) => {
+    this.setState({searchTerm: event.target.value})
+    this.searchFilter()
+  }
+
+  searchFilter = () => {
+    const searchTransactions = this.state.transactions.filter((transaction) => {
+      console.log(this.state.searchTerm)
+      return transaction.description.includes(this.state.searchTerm)
+    })
+    console.log(searchTransactions)
+
+    this.setState({
+      transactions: searchTransactions
+    })
+  }
+
+  componentWillMount(){
+    fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+    .then((res)=>res.json())
+    .then((data)=>this.setState({transactions: data}))
+  }
+
+  componentDidMount(){
+    console.log(this.state.transactions.length)
+    this.seeTransactionDescriptions()
+  }
+
 
   render() {
 
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search handleChange={this.handleChange} />
+        <TransactionsList transactions={this.state.transactions}  />
       </div>
     )
   }
