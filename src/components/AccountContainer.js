@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, {
+  Component
+} from 'react'
 import TransactionsList from './TransactionsList'
 import Search from './Search'
 
@@ -13,8 +15,7 @@ class AccountContainer extends Component {
 
     this.state = {
       searchTerm: '',
-      transactions: [
-        {
+      transactions: [{
           id: 1,
           posted_at: "2017-02-28 11:00:00",
           description: "Leather Pants, Gap co.",
@@ -42,20 +43,42 @@ class AccountContainer extends Component {
           category: "Coffee",
           amount: 365
         }
-      ]
+      ],
+      displayTransactions: []
     }
   }
 
-  handleChange(event) {
-    // your code here
+  componentWillMount() {
+    fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+      .then(resp => resp.json())
+      .then(resp => this.setState({
+        transactions: resp,
+        displayTransactions: resp
+      }))
+  }
+
+  handleChange = (event) => {
+    this.setState({
+      searchTerm: event.target.value
+    })
+    this.setDisplayTransactions()
+  }
+
+  setDisplayTransactions = () => {
+    this.setState({
+      displayTransactions: this.state.transactions.filter(trans => (
+        trans.category.toUpperCase().includes(this.state.searchTerm.toUpperCase()) ||
+        trans.description.toUpperCase().includes(this.state.searchTerm.toUpperCase())
+      ))
+    })
   }
 
   render() {
 
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange} />
+        <TransactionsList transactions={this.state.displayTransactions} />
       </div>
     )
   }
