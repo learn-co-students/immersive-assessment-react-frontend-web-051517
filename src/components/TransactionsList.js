@@ -4,7 +4,7 @@ import Transaction from './Transaction'
 const TransactionsList = (props) => {
   const {transactions, searchTerm} = props
 
-  function transactionsFilter(transaction) {
+  const transactionsFilter = (transaction) => {
     const regex = new RegExp(searchTerm, 'gi')
     return !!transaction.description.match(regex) || !!transaction.category.match(regex)
   }
