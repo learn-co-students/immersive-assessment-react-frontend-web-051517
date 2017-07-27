@@ -7,10 +7,6 @@ class AccountContainer extends Component {
   constructor() {
     super()
 
-    // we have provided this default state for you,
-    // use this to get the functionality working
-    // and then replace the default transactions with a call to the API
-
     this.state = {
       searchTerm: '',
       transactions: [
@@ -46,16 +42,32 @@ class AccountContainer extends Component {
     }
   }
 
-  handleChange(event) {
-    // your code here
+  componentDidMount(){
+    fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+      .then(data => data.json())
+      .then(transactions => this.setState({transactions}))
   }
+
+  transactions = () => {
+    let returnTransactions = this.state.transactions
+
+    if(this.state.searchTerm !== ''){
+      returnTransactions = returnTransactions.filter(function(i){
+        return ( i.description.includes(this.state.searchTerm) || i.category.includes(this.state.searchTerm) )
+      }.bind(this))
+    }
+
+    return returnTransactions
+  }
+
+  handleChange = searchTerm => {this.setState({searchTerm})}
 
   render() {
 
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange} />
+        <TransactionsList transactions={this.transactions()}/>
       </div>
     )
   }
