@@ -23,7 +23,7 @@ class AccountContainer extends Component {
       })
   }
 
-  handleChange(event) {
+  handleChange = (event) => {
     const searchTerm = event.target.value
     this.setState({searchTerm})
   }
@@ -31,7 +31,7 @@ class AccountContainer extends Component {
   render() {
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange.bind(this)} />
+        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange} />
         <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
       </div>
     )

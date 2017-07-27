@@ -38,7 +38,9 @@ const TransactionsList = (props) => {
         {
           transactions
             .filter(transactionsFilter)
-            .map((transaction) => (<Transaction key={transaction.id} transaction={transaction}/>))
+            .map((transaction) => {
+              return <Transaction key={transaction.id} transaction={transaction}/>
+            })
         }
 
       </tbody>
