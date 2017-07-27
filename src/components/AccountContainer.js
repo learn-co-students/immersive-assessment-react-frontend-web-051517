@@ -13,49 +13,54 @@ class AccountContainer extends Component {
 
     this.state = {
       searchTerm: '',
-      transactions: [
-        {
-          id: 1,
-          posted_at: "2017-02-28 11:00:00",
-          description: "Leather Pants, Gap co.",
-          category: "Fashion",
-          amount: -20000
-        },
-        {
-          id: 2,
-          posted_at: "2017-02-29 10:30:00",
-          description: "Paycheck from Bob's Burgers",
-          category: "Income",
-          amount: 100000
-        },
-        {
-          id: 3,
-          posted_at: "2017-05-24 10:53:00",
-          description: "'Pair Programming Illuminated' by Laurie Williams and Robert Kessler",
-          category: "Book",
-          amount: 1498
-        },
-        {
-          id: 4,
-          posted_at: "2017-05-24 08:52:00",
-          description: "Medium Iced Cold Brew, Gregory's Coffee",
-          category: "Coffee",
-          amount: 365
-        }
-      ]
+      transactions: []
     }
   }
 
-  handleChange(event) {
-    // your code here
+  componentDidMount() {
+    this.fetchData()
+  }
+
+  fetchData() {
+    const url = 'https://boiling-brook-94902.herokuapp.com/transactions'
+    fetch(url)
+      .then(res => res.json())
+      .then(transactions => {
+        this.setState({ transactions })
+        if (this.state.searchTerm !== '') {
+          this.handleSearch()
+        }
+    })
+  }
+
+  handleChange = (event) => {
+    this.setState({ searchTerm: event.target.value })
+    this.fetchData()
+  }
+
+  handleSearch() {
+    const filtered = this.state.transactions.filter(trans => {
+      let description = trans.description.toLowerCase()
+      let category = trans.category.toLowerCase()
+      let terms = this.state.searchTerm.toLowerCase()
+
+      return description.includes(terms) || category.includes(terms)
+    })
+    this.setState({ transactions: filtered })
   }
 
   render() {
 
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search
+          searchTerm={this.state.searchTerm}
+          handleChange={this.handleChange}
+        />
+        <TransactionsList
+          transactions={this.state.transactions}
+          searchTerm={this.state.searchTerm}
+        />
       </div>
     )
   }
