@@ -6,7 +6,6 @@ class AccountContainer extends Component {
 
   constructor() {
     super()
-
     // we have provided this default state for you,
     // use this to get the functionality working
     // and then replace the default transactions with a call to the API
@@ -21,7 +20,7 @@ class AccountContainer extends Component {
     if (event.target.value === "") {
       this.fetchData()
     }
-    
+
     this.setState({
       searchTerm: event.target.value
     })
