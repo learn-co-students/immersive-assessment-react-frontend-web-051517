@@ -13,49 +13,57 @@ class AccountContainer extends Component {
 
     this.state = {
       searchTerm: '',
-      transactions: [
-        {
-          id: 1,
-          posted_at: "2017-02-28 11:00:00",
-          description: "Leather Pants, Gap co.",
-          category: "Fashion",
-          amount: -20000
-        },
-        {
-          id: 2,
-          posted_at: "2017-02-29 10:30:00",
-          description: "Paycheck from Bob's Burgers",
-          category: "Income",
-          amount: 100000
-        },
-        {
-          id: 3,
-          posted_at: "2017-05-24 10:53:00",
-          description: "'Pair Programming Illuminated' by Laurie Williams and Robert Kessler",
-          category: "Book",
-          amount: 1498
-        },
-        {
-          id: 4,
-          posted_at: "2017-05-24 08:52:00",
-          description: "Medium Iced Cold Brew, Gregory's Coffee",
-          category: "Coffee",
-          amount: 365
-        }
-      ]
+      transactions: []
     }
   }
 
-  handleChange(event) {
-    // your code here
+  componentDidMount = () => {
+    this.fetchTransactions()
+  }
+
+  fetchTransactions = () => {
+    fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+    .then( res => res.json())
+    .then( transData => this.setState({
+      transactions: transData
+    }))
+  }
+
+  //I was trying to figure out how to reset the transactions
+  // array once the search bar was cleared but was not able to.
+  // the problem I was having was something to do with some trailing
+  // whitespace. I coerced the value to a boolean, but it was renering true
+  // when empty, then false with the first letter entered, then true for the
+  // remaining letters. If I would of been able to get that working, then I
+  // I would of placed an if statement in the function below, and called
+  // fetch transactions if the searchTerm was empty, else called filterTransactions.
+  handleChange = (event) => {
+    this.setState({
+      searchTerm: event.target.value
+    })
+    this.filterTransactions()
+  }
+
+  filterTransactions = () => {
+    let search = this.state.searchTerm
+    let filtered = this.state.transactions.filter((trans) => {
+      return (
+      trans.description.toLowerCase().startsWith(search.toLowerCase())
+      ||
+      trans.category.toLowerCase().startsWith(search.toLowerCase())
+      )
+    })
+    this.setState({
+      transactions: filtered
+    })
   }
 
   render() {
 
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search searchTerm={this.state.searchTerm} handleChange={() => this.handleChange} />
+        <TransactionsList transactions={this.state.transactions} />
       </div>
     )
   }
