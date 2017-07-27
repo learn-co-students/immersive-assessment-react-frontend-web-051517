@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import TransactionsList from './TransactionsList'
 import Search from './Search'
+import Transaction from './Transaction'
 
 class AccountContainer extends Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     // we have provided this default state for you,
     // use this to get the functionality working
@@ -46,16 +47,34 @@ class AccountContainer extends Component {
     }
   }
 
-  handleChange(event) {
-    // your code here
+  handleChange = (event) => {
+    this.setState({ searchTerm: event.target.value });
   }
+
+  componentDidMount() {
+    fetch('https://boiling-brook-94902.herokuapp.com/transactions')
+    .then(response => response.json())
+    .then( transactions => this.setState({transactions}))
+  }
+
+
+//filter transactions based on searchTerm either equal to nothing or something
+  // filters based on transaction.category OR transaction.description
+  filteredTransactions() {
+    if (this.state.searchTerm === '') {
+      return this.state.transactions
+    } else {
+    return this.state.transactions.filter(t =>
+       t.description.includes(this.state.searchTerm) ||t.category.includes(this.state.searchTerm) )
+     }
+   }
 
   render() {
 
     return (
       <div>
-        <Search searchTerm={this.state.searchTerm} handleChange={"...add code here..."} />
-        <TransactionsList transactions={this.state.transactions} searchTerm={this.state.searchTerm} />
+        <Search searchTerm={this.state.searchTerm} handleChange={this.handleChange} />
+        <TransactionsList transactions={this.filteredTransactions()} searchTerm={this.state.searchTerm} />
       </div>
     )
   }
